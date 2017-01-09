@@ -396,7 +396,7 @@ function providerConfig($http) {
                 return restangularizeResponse(subject, false, filledObject);
             }
             function getFunction(params, headers) {
-                var call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers).toPromise();
+                var call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
                 var promise = call.toPromise();
                 call.subscribe(function () { call.complete(); });
                 return promise;

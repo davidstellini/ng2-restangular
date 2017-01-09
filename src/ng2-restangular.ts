@@ -593,8 +593,8 @@ function providerConfig($http) {
       }
 
       function getFunction(params, headers) {
-        var call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers).toPromise();
-        var promise = call.toPromise();
+        let call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
+        let promise = call.toPromise();
 
         call.subscribe( ()=> {call.complete()});
         return promise;
@@ -602,24 +602,24 @@ function providerConfig($http) {
       }
 
       function deleteFunction(params, headers) {
-        var call = _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
-        var promise = call.toPromise();
+        let call = _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
+        let promise = call.toPromise();
 
         call.subscribe( ()=> {call.complete()});
         return promise;
       }
 
       function putFunction(params, headers) {
-        var call = _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
-        var promise = call.toPromise();
+        let call = _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
+        let promise = call.toPromise();
 
         call.subscribe( ()=> {call.complete()});
         return promise;
       }
 
       function postFunction(what, elem, params, headers) {
-        var call = _.bind(elemFunction, this)('post', what, params, elem, headers);
-        var promise = call.toPromise();
+        let call = _.bind(elemFunction, this)('post', what, params, elem, headers);
+        let promise = call.toPromise();
 
         call.subscribe( ()=> {call.complete()});
         return promise;
