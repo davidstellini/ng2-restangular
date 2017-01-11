@@ -126,7 +126,17 @@ function providerConfig($http) {
             }
             // Promises
             function restangularizeResponse(subject, isCollection, valueToFill) {
-                return subject.filter(function (res) { return res; });
+                var subj = subject.filter(function (res) { return res; });
+                var prom = new Promise(function (resolve, reject) {
+                    subj.subscribe(function (s) {
+                        resolve(s);
+                    });
+                    subj.catch(function (err, caught) {
+                        reject(err);
+                        return err;
+                    });
+                });
+                return prom;
             }
             function resolvePromise(subject, response, data, filledValue) {
                 _.extend(filledValue, data);
@@ -396,28 +406,16 @@ function providerConfig($http) {
                 return restangularizeResponse(subject, false, filledObject);
             }
             function getFunction(params, headers) {
-                var call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
-                var promise = call.toPromise();
-                call.subscribe(function () { call.complete(); });
-                return promise;
+                return _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
             }
             function deleteFunction(params, headers) {
-                var call = _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
-                var promise = call.toPromise();
-                call.subscribe(function () { call.complete(); });
-                return promise;
+                return _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
             }
             function putFunction(params, headers) {
-                var call = _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
-                var promise = call.toPromise();
-                call.subscribe(function () { call.complete(); });
-                return promise;
+                return _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
             }
             function postFunction(what, elem, params, headers) {
-                var call = _.bind(elemFunction, this)('post', what, params, elem, headers);
-                var promise = call.toPromise();
-                call.subscribe(function () { call.complete(); });
-                return promise;
+                return _.bind(elemFunction, this)('post', what, params, elem, headers);
             }
             function headFunction(params, headers) {
                 return _.bind(elemFunction, this)('head', undefined, params, undefined, headers);

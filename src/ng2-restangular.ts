@@ -1,5 +1,5 @@
 import {Injectable, Inject, Injector, Optional} from "@angular/core";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import * as _ from "lodash";
 import {RESTANGULAR} from "./ng2-restangular.config";
 import {RestangularHttp} from "./ng2-restangular-http";
@@ -240,7 +240,20 @@ function providerConfig($http) {
 
       // Promises
       function restangularizeResponse(subject, isCollection, valueToFill) {
-        return subject.filter(res => res);
+        let subj: Subject<any> = subject.filter(res => res);
+        let prom = new Promise((resolve, reject) => {
+          subj.subscribe(s => {
+            resolve(s);
+          });
+
+
+          subj.catch( (err, caught) => {
+            reject(err);
+            return err;
+          });
+        });
+
+        return prom;
       }
 
       function resolvePromise(subject, response, data, filledValue) {
@@ -593,36 +606,19 @@ function providerConfig($http) {
       }
 
       function getFunction(params, headers) {
-        let call = _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
-        let promise = call.toPromise();
-
-        call.subscribe( ()=> {call.complete()});
-        return promise;
-
+        return _.bind(elemFunction, this)('get', undefined, params, undefined, headers);
       }
 
       function deleteFunction(params, headers) {
-        let call = _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
-        let promise = call.toPromise();
-
-        call.subscribe( ()=> {call.complete()});
-        return promise;
+        return _.bind(elemFunction, this)('remove', undefined, params, undefined, headers);
       }
 
       function putFunction(params, headers) {
-        let call = _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
-        let promise = call.toPromise();
-
-        call.subscribe( ()=> {call.complete()});
-        return promise;
+        return _.bind(elemFunction, this)('put', undefined, params, undefined, headers);
       }
 
       function postFunction(what, elem, params, headers) {
-        let call = _.bind(elemFunction, this)('post', what, params, elem, headers);
-        let promise = call.toPromise();
-
-        call.subscribe( ()=> {call.complete()});
-        return promise;
+        return _.bind(elemFunction, this)('post', what, params, elem, headers);
       }
 
       function headFunction(params, headers) {
